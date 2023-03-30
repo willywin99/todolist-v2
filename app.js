@@ -32,20 +32,22 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems)
-  .then(() => {
-    console.log("Succesfully saved default items to DB");
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-
-// const items = ["Buy Food", "Cook Food", "Eat Food"];
-// const workItems = [];
-
 app.get("/", function(req, res) {
 
-  res.render("list", {listTitle: "Today", newListItems: items});
+  Item.find({})
+  .then((foundItems, err) => {
+    
+    if (foundItems.length === 0) {
+      Item.insertMany(defaultItems)
+        .then(() => {
+          console.log("Succesfully saved default items to DB");
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+      res.render("list", {listTitle: "Today", newListItems: foundItems});
+    });
 
 });
 
